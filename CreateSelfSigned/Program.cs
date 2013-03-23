@@ -105,6 +105,11 @@ namespace CreateSelfSigned
             certificateGenerator.AddExtension(
                 X509Extensions.BasicConstraints.Id, true, new BasicConstraints(false));
 
+            // Add the "Extended Key Usage" attribute, specifying "server authentication".
+            var usages = new[] { KeyPurposeID.IdKPServerAuth };
+            certificateGenerator.AddExtension(
+                X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(usages));
+
             // The certificate is signed with the issuer's private key.
             var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
 
