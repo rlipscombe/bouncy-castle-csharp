@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
@@ -86,29 +87,40 @@ namespace CreateSelfSigned
             // shows how to create this from the issuing certificate. Since we're creating a self-signed certificate, we have to do this slightly differently.
             var issuerSerialNumber = serialNumber; // Self-signed, so it's the same serial number.
 
-            var authorityKeyIdentifier =
+            var authorityKeyIdentifierExtension =
                 new AuthorityKeyIdentifier(
                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(issuerKeyPair.Public),
                     new GeneralNames(new GeneralName(issuerDN)),
                     issuerSerialNumber);
             certificateGenerator.AddExtension(
-                X509Extensions.AuthorityKeyIdentifier.Id, false, authorityKeyIdentifier);
+                X509Extensions.AuthorityKeyIdentifier.Id, false, authorityKeyIdentifierExtension);
 
             // Add the Subject Key Identifier.
-            var subjectKeyIdentifier =
+            var subjectKeyIdentifierExtension =
                 new SubjectKeyIdentifier(
                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(subjectKeyPair.Public));
             certificateGenerator.AddExtension(
-                X509Extensions.SubjectKeyIdentifier.Id, false, subjectKeyIdentifier);
+                X509Extensions.SubjectKeyIdentifier.Id, false, subjectKeyIdentifierExtension);
 
-            // Add the "Basic Constraints" attribute.
+            // Add the "Basic Constraints" extension.
             certificateGenerator.AddExtension(
                 X509Extensions.BasicConstraints.Id, true, new BasicConstraints(false));
 
-            // Add the "Extended Key Usage" attribute, specifying "server authentication".
+            // Add the "Extended Key Usage" extension, specifying "server authentication".
             var usages = new[] { KeyPurposeID.IdKPServerAuth };
             certificateGenerator.AddExtension(
                 X509Extensions.ExtendedKeyUsage.Id, false, new ExtendedKeyUsage(usages));
+
+            // Add the "Subject Alternative Names" extension. Note that you have to repeat
+            // the value from the "Subject Name" property.
+            var subjectAlternativeNames = new Asn1Encodable[]
+                {
+                    new GeneralName(GeneralName.DnsName, "server"),
+                    new GeneralName(GeneralName.DnsName, "server.mydomain.com")
+                };
+            var subjectAlternativeNamesExtension = new DerSequence(subjectAlternativeNames);
+            certificateGenerator.AddExtension(
+                X509Extensions.SubjectAlternativeName.Id, false, subjectAlternativeNamesExtension);
 
             // The certificate is signed with the issuer's private key.
             var certificate = certificateGenerator.Generate(issuerKeyPair.Private, random);
