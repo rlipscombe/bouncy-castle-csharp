@@ -7,8 +7,8 @@
     <ProjectGuid>{519EC987-2F86-4DAF-9A03-15E19C46AE43}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CreateSelfSigned</RootNamespace>
-    <AssemblyName>CreateSelfSigned</AssemblyName>
+    <RootNamespace>CreateCertificate</RootNamespace>
+    <AssemblyName>CreateCertificate</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -12,7 +12,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
 
-namespace CreateSelfSigned
+namespace CreateCertificate
 {
     static class Program
     {
@@ -20,7 +20,7 @@ namespace CreateSelfSigned
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("CreateSelfSigned subject-name filename.pfx");
+                Console.WriteLine("CreateCertificate subject-name filename.pfx");
                 return -1;
             }
 
