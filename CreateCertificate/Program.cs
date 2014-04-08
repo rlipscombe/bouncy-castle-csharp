@@ -106,7 +106,7 @@ namespace CreateCertificate
             var serialNumber = GenerateSerialNumber(random);
             var issuerSerialNumber = new BigInteger(issuerCertificate.GetSerialNumber());
 
-            const bool isCertificateAuthority = true;
+            const bool isCertificateAuthority = false;
             var certificate = GenerateCertificate(random, subjectName, subjectKeyPair, serialNumber,
                                                   subjectAlternativeNames, issuerName, issuerKeyPair,
                                                   issuerSerialNumber, isCertificateAuthority,
